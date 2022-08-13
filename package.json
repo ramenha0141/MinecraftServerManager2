@@ -18,10 +18,12 @@
         "@emotion/react": "^11.10.0",
         "@emotion/styled": "^11.10.0",
         "@mui/material": "^5.10.0",
+        "@vscode/codicons": "^0.0.32",
         "electron": "^19.0.9",
         "jotai": "^1.7.8",
         "react": "^18.2.0",
-        "react-dom": "^18.2.0"
+        "react-dom": "^18.2.0",
+        "react-router-dom": "^6.3.0"
     },
     "devDependencies": {
         "@types/react": "^18.0.15",
