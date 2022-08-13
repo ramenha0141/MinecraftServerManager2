@@ -29,10 +29,11 @@ const preload = join(__dirname, '../preload/index.js');
 const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`;
 const indexHtml = join(ROOT_PATH.dist, 'index.html');
 
-async function createWindow() {
+const createWindow = async () => {
     win = new BrowserWindow({
-        title: 'Main window',
+        title: 'Minecraft Server Manager',
         icon: join(ROOT_PATH.public, 'favicon.svg'),
+        show: false,
         webPreferences: {
             preload,
             nodeIntegration: true,
@@ -40,27 +41,23 @@ async function createWindow() {
         }
     });
 
+    win.removeMenu();
+
     if (app.isPackaged) {
         win.loadFile(indexHtml);
     } else {
         win.loadURL(url);
-        // win.webContents.openDevTools()
+        win.webContents.openDevTools();
     }
 
-    // Test actively push message to the Electron-Renderer
-    win.webContents.on('did-finish-load', () => {
-        win?.webContents.send(
-            'main-process-message',
-            new Date().toLocaleString()
-        );
-    });
+    win.once('ready-to-show', () => win?.show());
 
     // Make all links open with the browser, not with the application
     win.webContents.setWindowOpenHandler(({ url }) => {
         if (url.startsWith('https:')) shell.openExternal(url);
         return { action: 'deny' };
     });
-}
+};
 
 app.whenReady().then(createWindow);
 
