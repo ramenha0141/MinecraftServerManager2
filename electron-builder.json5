@@ -2,8 +2,8 @@
  * @see https://www.electron.build/configuration/configuration
  */
 {
-    appId: 'YourAppID',
-    productName: 'YourAppName',
+    appId: 'com.ramen.minecraftservermanager',
+    productName: 'MinecraftServerManager',
     copyright: 'Copyright © 2022 ${author}',
     asar: true,
     directories: {
@@ -19,12 +19,6 @@
             }
         ],
         artifactName: '${productName}-Windows-${version}-Setup.${ext}'
-    },
-    nsis: {
-        oneClick: false,
-        perMachine: false,
-        allowToChangeInstallationDirectory: true,
-        deleteAppDataOnUninstall: false
     },
     mac: {
         target: ['dmg'],
