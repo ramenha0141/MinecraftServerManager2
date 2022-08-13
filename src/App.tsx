@@ -25,7 +25,7 @@ const App = () => {
             <HashRouter>
                 <Routes>
                     <Route path='/' element={<Layout />}>
-                        <Route index element={<div></div>}></Route>
+                        <Route index element={<div />}></Route>
                     </Route>
                 </Routes>
             </HashRouter>

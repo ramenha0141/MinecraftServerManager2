@@ -1,9 +1,14 @@
+/// <reference types="vite/client" />
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { release } from 'os';
 import { join } from 'path';
 
 // Disable GPU Acceleration for Windows 7
-if (release().startsWith('6.1')) app.disableHardwareAcceleration();
+if (
+    release().startsWith('6.1') ||
+    import.meta.env.VITE_DISABLE_HARDWARE_ACCELERATION === 'true'
+)
+    app.disableHardwareAcceleration();
 
 // Set application name for Windows 10+ notifications
 if (process.platform === 'win32') app.setAppUserModelId(app.getName());
@@ -23,11 +28,6 @@ export const ROOT_PATH = {
 };
 
 let win: BrowserWindow | null = null;
-// Here, you can also use other preload
-const preload = join(__dirname, '../preload/index.js');
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin
-const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`;
-const indexHtml = join(ROOT_PATH.dist, 'index.html');
 
 const createWindow = async () => {
     win = new BrowserWindow({
@@ -35,7 +35,7 @@ const createWindow = async () => {
         icon: join(ROOT_PATH.public, 'favicon.svg'),
         show: false,
         webPreferences: {
-            preload,
+            preload: join(__dirname, '../preload/index.js'),
             nodeIntegration: true,
             contextIsolation: false
         }
@@ -44,9 +44,11 @@ const createWindow = async () => {
     win.removeMenu();
 
     if (app.isPackaged) {
-        win.loadFile(indexHtml);
+        win.loadFile(join(ROOT_PATH.dist, 'index.html'));
     } else {
-        win.loadURL(url);
+        win.loadURL(
+            `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`
+        );
         win.webContents.openDevTools();
     }
 
@@ -68,7 +70,6 @@ app.on('window-all-closed', () => {
 
 app.on('second-instance', () => {
     if (win) {
-        // Focus on the main window if the user tried to open another
         if (win.isMinimized()) win.restore();
         win.focus();
     }
@@ -80,21 +81,5 @@ app.on('activate', () => {
         allWindows[0].focus();
     } else {
         createWindow();
-    }
-});
-
-// new window example arg: new windows url
-ipcMain.handle('open-win', (event, arg) => {
-    const childWindow = new BrowserWindow({
-        webPreferences: {
-            preload
-        }
-    });
-
-    if (app.isPackaged) {
-        childWindow.loadFile(indexHtml, { hash: arg });
-    } else {
-        childWindow.loadURL(`${url}/#${arg}`);
-        // childWindow.webContents.openDevTools({ mode: "undocked", activate: true })
     }
 });
