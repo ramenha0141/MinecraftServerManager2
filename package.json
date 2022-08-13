@@ -1,35 +1,41 @@
 {
-  "name": "electron-vite-react",
-  "productName": "Electron",
-  "private": true,
-  "version": "2.0.0",
-  "description": "Vite React Electron boilerplate.",
-  "author": "草鞋没号 <308487730@qq.com>",
-  "license": "MIT",
-  "main": "dist/electron/main/index.js",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build && electron-builder"
-  },
-  "engines": {
-    "node": ">=14.17.0"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "@types/react": "^18.0.15",
-    "@types/react-dom": "^18.0.6",
-    "@vitejs/plugin-react": "^2.0.0",
-    "electron": "^19.0.9",
-    "electron-builder": "^23.1.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "sass": "^1.53.0",
-    "typescript": "^4.7.4",
-    "vite": "^3.0.2",
-    "vite-plugin-electron": "^0.8.3"
-  },
-  "env": {
-    "VITE_DEV_SERVER_HOST": "127.0.0.1",
-    "VITE_DEV_SERVER_PORT": 7777
-  }
+    "name": "minecraft-server-manager2",
+    "productName": "Minecraft Server Manager 2",
+    "private": true,
+    "version": "2.0.0",
+    "description": "Manager for Minecraft Server",
+    "author": "ramenha0141 <ramenhaoishii@gmail.com>",
+    "license": "MIT",
+    "main": "dist/electron/main/index.js",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build && electron-builder"
+    },
+    "engines": {
+        "node": ">=14.17.0"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.10.0",
+        "@emotion/styled": "^11.10.0",
+        "@mui/material": "^5.10.0",
+        "electron": "^19.0.9",
+        "jotai": "^1.7.8",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    },
+    "devDependencies": {
+        "@types/react": "^18.0.15",
+        "@types/react-dom": "^18.0.6",
+        "@vitejs/plugin-react": "^2.0.0",
+        "electron-builder": "^23.1.0",
+        "prettier": "^2.7.1",
+        "sass": "^1.53.0",
+        "typescript": "^4.7.4",
+        "vite": "^3.0.2",
+        "vite-plugin-electron": "^0.8.3"
+    },
+    "env": {
+        "VITE_DEV_SERVER_HOST": "127.0.0.1",
+        "VITE_DEV_SERVER_PORT": 7777
+    }
 }
