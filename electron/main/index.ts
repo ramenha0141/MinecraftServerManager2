@@ -1,16 +1,14 @@
 /// <reference types="vite/client" />
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import { release } from 'os';
 import { join } from 'path';
 
-// Disable GPU Acceleration for Windows 7
 if (
     release().startsWith('6.1') ||
     import.meta.env.VITE_DISABLE_HARDWARE_ACCELERATION === 'true'
 )
     app.disableHardwareAcceleration();
 
-// Set application name for Windows 10+ notifications
 if (process.platform === 'win32') app.setAppUserModelId(app.getName());
 
 if (!app.requestSingleInstanceLock()) {
@@ -21,16 +19,13 @@ if (!app.requestSingleInstanceLock()) {
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
 export const ROOT_PATH = {
-    // /dist
     dist: join(__dirname, '../..'),
-    // /dist or /public
     public: join(__dirname, app.isPackaged ? '../..' : '../../../public')
 };
-
-let win: BrowserWindow | null = null;
+const appDataPath = join(app.getPath('appData'), 'MinecraftServerManager');
 
 const createWindow = async () => {
-    win = new BrowserWindow({
+    const win = new BrowserWindow({
         title: 'Minecraft Server Manager',
         icon: join(ROOT_PATH.public, 'favicon.svg'),
         show: false,
@@ -40,9 +35,6 @@ const createWindow = async () => {
             contextIsolation: false
         }
     });
-
-    win.removeMenu();
-
     if (app.isPackaged) {
         win.loadFile(join(ROOT_PATH.dist, 'index.html'));
     } else {
@@ -51,28 +43,22 @@ const createWindow = async () => {
         );
         win.webContents.openDevTools();
     }
-
-    win.once('ready-to-show', () => win?.show());
-
-    // Make all links open with the browser, not with the application
+    win.removeMenu();
+    win.once('ready-to-show', () => win.show());
     win.webContents.setWindowOpenHandler(({ url }) => {
         if (url.startsWith('https:')) shell.openExternal(url);
         return { action: 'deny' };
+    });
+    app.on('second-instance', () => {
+        if (win.isMinimized()) win.restore();
+        win.focus();
     });
 };
 
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
-    win = null;
     if (process.platform !== 'darwin') app.quit();
-});
-
-app.on('second-instance', () => {
-    if (win) {
-        if (win.isMinimized()) win.restore();
-        win.focus();
-    }
 });
 
 app.on('activate', () => {
