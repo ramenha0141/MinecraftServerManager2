@@ -19,6 +19,7 @@ import {
 } from '@mui/material';
 import { useAtom, useAtomValue } from 'jotai';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { profilesState } from './states';
 
@@ -27,6 +28,7 @@ const Home = () => {
     const [showAddDialog, setAddDialog] = useState(false);
     const [showDeleteDialog, setDeleteDialog] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState('');
+    const navigate = useNavigate();
     const toggleAddDialog = () => setAddDialog((open) => !open);
     const toggleDeleteDialog = () => setDeleteDialog((open) => !open);
     return (
@@ -68,7 +70,7 @@ const Home = () => {
                                 </IconButton>
                             }
                         >
-                            <ListItemButton>
+                            <ListItemButton onClick={() => navigate(`/${key}`)}>
                                 <ListItemText primary={name} secondary={path} />
                             </ListItemButton>
                         </ListItem>
@@ -125,7 +127,7 @@ const AddProfileDialog = (props: { open: boolean; onClose: () => void }) => {
                 />
                 {!isEmpty && (
                     <Alert severity='warning' sx={{ mt: 2 }}>
-                        フォルダが空ではありません(意図したものであれば問題ありません)
+                        フォルダが空ではありません
                     </Alert>
                 )}
             </DialogContent>

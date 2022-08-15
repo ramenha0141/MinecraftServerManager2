@@ -13,7 +13,7 @@ import {
     Typography
 } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Suspense, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import { profilesState } from './states';
@@ -21,6 +21,7 @@ import { profilesState } from './states';
 const Layout = () => {
     const profiles = useAtomValue(profilesState);
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
     const toggleOpen = () => setOpen((open) => !open);
     return (
         <Box
@@ -46,7 +47,7 @@ const Layout = () => {
                     <ListSubheader sx={{ backgroundColor: 'inherit' }}>プロファイル</ListSubheader>
                     {Object.entries(profiles).map(([key, { name, path }]) => (
                         <ListItem key={key} disablePadding>
-                            <ListItemButton>
+                            <ListItemButton onClick={() => navigate(`/${key}`)}>
                                 <ListItemText primary={name} secondary={path} />
                             </ListItemButton>
                         </ListItem>
