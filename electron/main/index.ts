@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import windowStateKeeper from 'electron-window-state';
 import { release } from 'os';
 import fs from 'fs/promises';
@@ -7,11 +7,7 @@ import { join } from 'path';
 import { v4 as uuid, validate } from 'uuid';
 import type { Profiles } from '../../src/@types/API';
 
-if (
-    release().startsWith('6.1') ||
-    import.meta.env.VITE_DISABLE_HARDWARE_ACCELERATION === 'true'
-)
-    app.disableHardwareAcceleration();
+if (release().startsWith('6.1') || import.meta.env.VITE_DISABLE_HARDWARE_ACCELERATION === 'true') app.disableHardwareAcceleration();
 
 if (process.platform === 'win32') app.setAppUserModelId(app.getName());
 
@@ -47,9 +43,7 @@ const createWindow = async () => {
     if (app.isPackaged) {
         win.loadFile(join(paths.dist, 'index.html'));
     } else {
-        win.loadURL(
-            `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`
-        );
+        win.loadURL(`http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`);
         win.webContents.openDevTools();
     }
     win.removeMenu();
@@ -68,6 +62,9 @@ const createWindow = async () => {
     });
     ipcMain.on('setProfiles', (_, profiles: Profiles) => {
         fs.writeFile(paths.profiles, JSON.stringify(profiles));
+    });
+    ipcMain.handle('openFolder', async () => {
+        return (await dialog.showOpenDialog(win, { properties: ['openDirectory'] })).filePaths[0];
     });
 };
 
@@ -91,9 +88,7 @@ async function migrateIfNecessary() {
     const key = Object.keys(profiles)[0];
     if (!key || validate(key)) return;
     const migratedProfiles: Profiles = {};
-    Object.entries(profiles).map(
-        ([key, { path }]) => (migratedProfiles[uuid()] = { name: key, path })
-    );
+    Object.entries(profiles).map(([key, { path }]) => (migratedProfiles[uuid()] = { name: key, path }));
     fs.writeFile(paths.profiles, JSON.stringify(migratedProfiles));
 }
 async function getProfiles(): Promise<Profiles> {

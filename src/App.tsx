@@ -1,11 +1,6 @@
 import { lazy, useMemo } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
-import {
-    createTheme,
-    CssBaseline,
-    ThemeProvider,
-    useMediaQuery
-} from '@mui/material';
+import { createTheme, CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 import Layout from './Layout';
 
 const Home = lazy(() => import('./Home'));
