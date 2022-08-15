@@ -12,7 +12,6 @@ import {
     ListItem,
     ListItemButton,
     ListItemText,
-    OutlinedInput,
     Paper,
     TextField,
     Typography

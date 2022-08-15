@@ -1,4 +1,17 @@
-import { AppBar, Box, CircularProgress, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, ListSubheader, Toolbar, Typography } from '@mui/material';
+import {
+    AppBar,
+    Box,
+    CircularProgress,
+    Drawer,
+    IconButton,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemText,
+    ListSubheader,
+    Toolbar,
+    Typography
+} from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { Outlet } from 'react-router-dom';
 import { Suspense, useState } from 'react';
