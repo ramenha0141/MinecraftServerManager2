@@ -43,7 +43,7 @@ const Layout = () => {
             </AppBar>
             <Drawer open={open} onClose={toggleOpen}>
                 <List sx={{ flexGrow: 1, width: 240 }} onClick={toggleOpen}>
-                    <ListSubheader>プロファイル</ListSubheader>
+                    <ListSubheader sx={{ backgroundColor: 'inherit' }}>プロファイル</ListSubheader>
                     {Object.entries(profiles).map(([key, { name, path }]) => (
                         <ListItem key={key} disablePadding>
                             <ListItemButton>

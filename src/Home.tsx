@@ -1,5 +1,6 @@
 import { Add as AddIcon, Delete as DeleteIcon, Folder as FolderIcon } from '@mui/icons-material';
 import {
+    Alert,
     Box,
     Button,
     Dialog,
@@ -85,11 +86,16 @@ const AddProfileDialog = (props: { open: boolean; onClose: () => void }) => {
     const [profiles, setProfiles] = useAtom(profilesState);
     const [name, setName] = useState('');
     const [path, setPath] = useState('');
+    const [isEmpty, setIsEmpty] = useState(true);
     useEffect(() => {
         setName('');
         setPath('');
     }, [props.open]);
-    const openFolder = async () => setPath((await window.api.openFolder()) ?? '');
+    const openFolder = async () => {
+        const result = await window.api.openFolder();
+        setPath(result?.[0] ?? '');
+        setIsEmpty(result?.[1] ?? true);
+    };
     const handleAdd = () => {
         setProfiles({ ...profiles, [uuid()]: { name, path } });
         props.onClose();
@@ -106,6 +112,7 @@ const AddProfileDialog = (props: { open: boolean; onClose: () => void }) => {
                     value={path}
                     onChange={(event) => setPath(event.target.value)}
                     InputProps={{
+                        readOnly: true,
                         endAdornment: (
                             <InputAdornment position='end'>
                                 <IconButton onClick={openFolder}>
@@ -116,6 +123,11 @@ const AddProfileDialog = (props: { open: boolean; onClose: () => void }) => {
                     }}
                     sx={{ mt: 1 }}
                 />
+                {!isEmpty && (
+                    <Alert severity='warning' sx={{ mt: 2 }}>
+                        フォルダが空ではありません(意図したものであれば問題ありません)
+                    </Alert>
+                )}
             </DialogContent>
             <DialogActions>
                 <Button disabled={!name || !path} onClick={handleAdd}>
@@ -139,7 +151,10 @@ const DeleteProfileDialog = (props: { open: boolean; onClose: () => void; delete
             <DialogTitle>プロファイルを削除</DialogTitle>
             <DialogContent>
                 <Typography variant='body1'>
-                    <code style={{ padding: '0 4px' }}>{profiles[props.deleteTarget]?.name}</code>を削除しますか？
+                    <code style={{ padding: '0 4px', fontFamily: 'Consolas, "Courier New", Courier, Monaco, monospace' }}>
+                        {profiles[props.deleteTarget]?.name}
+                    </code>
+                    を削除しますか？
                 </Typography>
                 <Typography variant='body2'>(プロファイルを削除してもデータは失われません)</Typography>
             </DialogContent>

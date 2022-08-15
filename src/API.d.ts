@@ -10,7 +10,7 @@ export interface Profiles {
 export interface API {
     getProfiles: () => Promise<Profiles>;
     setProfiles: (profiles: Profiles) => void;
-    openFolder: () => Promise<string | undefined>;
+    openFolder: () => Promise<[string, boolean] | undefined>;
 }
 
 declare global {

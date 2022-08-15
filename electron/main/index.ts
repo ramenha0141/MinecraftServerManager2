@@ -64,7 +64,10 @@ const createWindow = async () => {
         fs.writeFile(paths.profiles, JSON.stringify(profiles));
     });
     ipcMain.handle('openFolder', async () => {
-        return (await dialog.showOpenDialog(win, { properties: ['openDirectory'] })).filePaths[0];
+        const path = (await dialog.showOpenDialog(win, { properties: ['openDirectory'] })).filePaths[0];
+        if (!path) return;
+        const isEmpty = (await fs.readdir(path)).length === 0;
+        return [path, isEmpty];
     });
 };
 
