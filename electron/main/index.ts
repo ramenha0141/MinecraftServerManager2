@@ -1,7 +1,11 @@
 /// <reference types="vite/client" />
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import windowStateKeeper from 'electron-window-state';
 import { release } from 'os';
+import fs from 'fs/promises';
 import { join } from 'path';
+import { v4 as uuid, validate } from 'uuid';
+import type { Profiles } from '../../src/@types/API';
 
 if (
     release().startsWith('6.1') ||
@@ -18,25 +22,30 @@ if (!app.requestSingleInstanceLock()) {
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
-export const ROOT_PATH = {
+export const paths = {
     dist: join(__dirname, '../..'),
-    public: join(__dirname, app.isPackaged ? '../..' : '../../../public')
+    public: join(__dirname, app.isPackaged ? '../..' : '../../../public'),
+    profiles: join(app.getPath('appData'), app.getName(), 'profiles.json')
 };
-const appDataPath = join(app.getPath('appData'), 'MinecraftServerManager');
+
+migrateIfNecessary();
 
 const createWindow = async () => {
+    const windowState = windowStateKeeper({});
     const win = new BrowserWindow({
         title: 'Minecraft Server Manager',
-        icon: join(ROOT_PATH.public, 'favicon.svg'),
+        icon: join(paths.public, 'favicon.svg'),
+        x: windowState.x,
+        y: windowState.y,
+        width: windowState.width,
+        height: windowState.height,
         show: false,
         webPreferences: {
-            preload: join(__dirname, '../preload/index.js'),
-            nodeIntegration: true,
-            contextIsolation: false
+            preload: join(__dirname, '../preload/index.js')
         }
     });
     if (app.isPackaged) {
-        win.loadFile(join(ROOT_PATH.dist, 'index.html'));
+        win.loadFile(join(paths.dist, 'index.html'));
     } else {
         win.loadURL(
             `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`
@@ -52,6 +61,13 @@ const createWindow = async () => {
     app.on('second-instance', () => {
         if (win.isMinimized()) win.restore();
         win.focus();
+    });
+
+    ipcMain.handle('getProfiles', async () => {
+        return await getProfiles();
+    });
+    ipcMain.on('setProfiles', (_, profiles: Profiles) => {
+        fs.writeFile(paths.profiles, JSON.stringify(profiles));
     });
 };
 
@@ -69,3 +85,27 @@ app.on('activate', () => {
         createWindow();
     }
 });
+
+async function migrateIfNecessary() {
+    const profiles = await getProfiles();
+    const key = Object.keys(profiles)[0];
+    if (!key || validate(key)) return;
+    const migratedProfiles: Profiles = {};
+    Object.entries(profiles).map(
+        ([key, { path }]) => (migratedProfiles[uuid()] = { name: key, path })
+    );
+    fs.writeFile(paths.profiles, JSON.stringify(migratedProfiles));
+}
+async function getProfiles(): Promise<Profiles> {
+    if (!(await exists(paths.profiles))) return {};
+    return JSON.parse(await fs.readFile(paths.profiles, 'utf-8'));
+}
+
+async function exists(path: string) {
+    try {
+        await fs.lstat(path);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}

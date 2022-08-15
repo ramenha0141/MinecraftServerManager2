@@ -8,12 +8,12 @@ export interface Profiles {
 }
 
 export interface API {
-    getProfile: () => Profiles;
-    openProfile: (profileId: string) => void;
+    getProfiles: () => Promise<Profiles>;
+    setProfiles: (profiles: Profiles) => void;
 }
 
 declare global {
     interface Window {
-        API: API;
+        api: API;
     }
 }

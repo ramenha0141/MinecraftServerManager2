@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { lazy, useMemo } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import {
     createTheme,
@@ -7,6 +7,8 @@ import {
     useMediaQuery
 } from '@mui/material';
 import Layout from './Layout';
+
+const Home = lazy(() => import('./Home'));
 
 const App = () => {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -25,7 +27,7 @@ const App = () => {
             <HashRouter>
                 <Routes>
                     <Route path='/' element={<Layout />}>
-                        <Route index element={<div />}></Route>
+                        <Route index element={<Home />}></Route>
                     </Route>
                 </Routes>
             </HashRouter>

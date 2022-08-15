@@ -50,7 +50,9 @@ const Layout = () => {
             <Box
                 sx={(theme) => ({
                     flexGrow: 1,
-                    backgroundColor: theme.palette.background.default
+                    backgroundColor: theme.palette.background.default,
+                    display: 'flex',
+                    flexDirection: 'column'
                 })}
             >
                 <Suspense
