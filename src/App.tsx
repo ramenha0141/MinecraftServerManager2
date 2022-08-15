@@ -2,6 +2,8 @@ import { lazy, useMemo } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { createTheme, CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 import Layout from './Layout';
+import Manage from './Manage';
+import Setup from './Setup';
 
 const Home = lazy(() => import('./Home'));
 
@@ -22,7 +24,9 @@ const App = () => {
             <HashRouter>
                 <Routes>
                     <Route path='/' element={<Layout />}>
-                        <Route index element={<Home />}></Route>
+                        <Route index element={<Home />} />
+                        <Route path='/manage/:id' element={<Manage />} />
+                        <Route path='/setup/:id' element={<Setup />} />
                     </Route>
                 </Routes>
             </HashRouter>

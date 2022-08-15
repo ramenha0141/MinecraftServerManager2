@@ -11,6 +11,7 @@ export interface API {
     getProfiles: () => Promise<Profiles>;
     setProfiles: (profiles: Profiles) => void;
     openFolder: () => Promise<[string, boolean] | undefined>;
+    isInstalled: (path: string) => Promise<boolean>;
 }
 
 declare global {

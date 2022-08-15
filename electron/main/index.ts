@@ -69,6 +69,7 @@ const createWindow = async () => {
         const isEmpty = (await fs.readdir(path)).length === 0;
         return [path, isEmpty];
     });
+    ipcMain.handle('isInstalled', async (_, path: string) => await exists(join(path, 'server.properties')));
 };
 
 app.whenReady().then(createWindow);

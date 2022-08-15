@@ -19,16 +19,16 @@ import {
 } from '@mui/material';
 import { useAtom, useAtomValue } from 'jotai';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { profilesState } from './states';
+import useManageOrSetup from './useManageOrSetup';
 
 const Home = () => {
     const profiles = useAtomValue(profilesState);
     const [showAddDialog, setAddDialog] = useState(false);
     const [showDeleteDialog, setDeleteDialog] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState('');
-    const navigate = useNavigate();
+    const manageOrSetup = useManageOrSetup();
     const toggleAddDialog = () => setAddDialog((open) => !open);
     const toggleDeleteDialog = () => setDeleteDialog((open) => !open);
     return (
@@ -55,14 +55,14 @@ const Home = () => {
                     </IconButton>
                 </Box>
                 <List component={Paper} sx={{ flexGrow: 1 }}>
-                    {Object.entries(profiles).map(([key, { name, path }]) => (
+                    {Object.entries(profiles).map(([id, { name, path }]) => (
                         <ListItem
-                            key={key}
+                            key={id}
                             disablePadding
                             secondaryAction={
                                 <IconButton
                                     onClick={() => {
-                                        setDeleteTarget(key);
+                                        setDeleteTarget(id);
                                         toggleDeleteDialog();
                                     }}
                                 >
@@ -70,7 +70,7 @@ const Home = () => {
                                 </IconButton>
                             }
                         >
-                            <ListItemButton onClick={() => navigate(`/${key}`)}>
+                            <ListItemButton onClick={() => manageOrSetup(id)}>
                                 <ListItemText primary={name} secondary={path} />
                             </ListItemButton>
                         </ListItem>

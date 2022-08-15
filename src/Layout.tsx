@@ -17,11 +17,12 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { Suspense, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import { profilesState } from './states';
+import useManageOrSetup from './useManageOrSetup';
 
 const Layout = () => {
     const profiles = useAtomValue(profilesState);
     const [open, setOpen] = useState(false);
-    const navigate = useNavigate();
+    const manageOrSetup = useManageOrSetup();
     const toggleOpen = () => setOpen((open) => !open);
     return (
         <Box
@@ -45,9 +46,9 @@ const Layout = () => {
             <Drawer open={open} onClose={toggleOpen}>
                 <List sx={{ flexGrow: 1, width: 240 }} onClick={toggleOpen}>
                     <ListSubheader sx={{ backgroundColor: 'inherit' }}>プロファイル</ListSubheader>
-                    {Object.entries(profiles).map(([key, { name, path }]) => (
-                        <ListItem key={key} disablePadding>
-                            <ListItemButton onClick={() => navigate(`/${key}`)}>
+                    {Object.entries(profiles).map(([id, { name, path }]) => (
+                        <ListItem key={id} disablePadding>
+                            <ListItemButton onClick={() => manageOrSetup(id)}>
                                 <ListItemText primary={name} secondary={path} />
                             </ListItemButton>
                         </ListItem>
