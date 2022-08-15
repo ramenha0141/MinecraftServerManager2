@@ -5,7 +5,7 @@ import { release } from 'os';
 import fs from 'fs/promises';
 import { join } from 'path';
 import { v4 as uuid, validate } from 'uuid';
-import type { Profiles } from '../../src/@types/API';
+import type { Profiles } from '../../src/API';
 
 if (release().startsWith('6.1') || import.meta.env.VITE_DISABLE_HARDWARE_ACCELERATION === 'true') app.disableHardwareAcceleration();
 

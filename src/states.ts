@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import type { Profiles } from './@types/API';
+import type { Profiles } from './API';
 
 const profilesStateBase = atom(await window.api.getProfiles());
 export const profilesState = atom<Profiles, Profiles>(

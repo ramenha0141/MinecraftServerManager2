@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import type { API, Profiles } from '../../src/@types/API';
+import type { API, Profiles } from '../../src/API';
 
 const api: API = {
     getProfiles: () => ipcRenderer.invoke('getProfiles'),
