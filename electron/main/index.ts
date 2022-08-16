@@ -46,7 +46,10 @@ const vanillaVersionURLs: Record<VanillaVersion, string> = {
 };
 
 const createWindow = async () => {
-    const windowState = windowStateKeeper({});
+    const windowState = windowStateKeeper({
+        defaultWidth: 800,
+        defaultHeight: 500
+    });
     const win = new BrowserWindow({
         title: 'Minecraft Server Manager',
         icon: join(paths.public, 'favicon.svg'),
@@ -59,6 +62,7 @@ const createWindow = async () => {
             preload: join(__dirname, '../preload/index.js')
         }
     });
+    windowState.manage(win);
     if (app.isPackaged) {
         win.loadFile(join(paths.dist, 'index.html'));
     } else {

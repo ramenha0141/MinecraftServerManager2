@@ -1,11 +1,10 @@
-import { lazy, useMemo } from 'react';
+import { useMemo } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { createTheme, CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 import Layout from './Layout';
+import Home from './Home';
 import Manage from './Manage';
 import Setup from './Setup';
-
-const Home = lazy(() => import('./Home'));
 
 const App = () => {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
