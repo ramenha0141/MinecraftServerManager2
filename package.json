@@ -21,9 +21,9 @@
         "@mui/icons-material": "^5.8.4",
         "@mui/material": "^5.10.0",
         "@vscode/codicons": "^0.0.32",
-        "axios": "^0.27.2",
         "electron-window-state": "^5.0.3",
         "jotai": "^1.7.8",
+        "node-fetch": "^3.2.10",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-router-dom": "^6.3.0",
@@ -38,7 +38,6 @@
         "electron": "^19.0.9",
         "electron-builder": "^23.1.0",
         "prettier": "^2.7.1",
-        "sass": "^1.53.0",
         "typescript": "^4.7.4",
         "vite": "^3.0.2",
         "vite-plugin-electron": "^0.8.3"

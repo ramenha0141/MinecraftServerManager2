@@ -6,11 +6,12 @@ import fs from 'fs/promises';
 import { join } from 'path';
 import { v4 as uuid, validate } from 'uuid';
 import type { Profiles, VanillaVersion } from '../../src/API';
-import axios from 'axios';
-import type { Readable } from 'stream';
+import { pipeline } from 'stream';
 import { createWriteStream } from 'fs';
 import util from 'util';
 import child_process from 'child_process';
+import fetch from 'node-fetch';
+const streamPipeline = util.promisify(pipeline);
 const exec = util.promisify(child_process.exec);
 
 if (release().startsWith('6.1') || import.meta.env.VITE_DISABLE_HARDWARE_ACCELERATION === 'true') app.disableHardwareAcceleration();
@@ -91,12 +92,8 @@ const createWindow = async () => {
     ipcMain.on('installVanilla', async (_, path: string, version: VanillaVersion) => {
         (async () => {
             try {
-                const { data } = await axios.get<Readable>(vanillaVersionURLs[version], { responseType: 'stream' });
-                data.pipe(createWriteStream(join(path, 'server.jar')));
-                await new Promise<void>((resolve, reject) => {
-                    data.once('end', () => resolve());
-                    data.once('error', (e) => reject(e));
-                });
+                const res = await fetch(vanillaVersionURLs[version]);
+                await streamPipeline(res.body!, createWriteStream(join(path, 'server.jar')));
                 win.webContents.send('downloadState', true);
             } catch (e) {
                 win.webContents.send('downloadState', false);
