@@ -13,7 +13,7 @@ import {
     Typography
 } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { Suspense, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import { profilesState } from './states';
