@@ -49,7 +49,7 @@ const Layout = () => {
                     {Object.entries(profiles).map(([id, { name, path }]) => (
                         <ListItem key={id} disablePadding>
                             <ListItemButton onClick={() => manageOrSetup(id)}>
-                                <ListItemText primary={name} secondary={path} />
+                                <ListItemText primary={name} secondary={path} sx={{ textOverflow: 'ellipsis' }} />
                             </ListItemButton>
                         </ListItem>
                     ))}

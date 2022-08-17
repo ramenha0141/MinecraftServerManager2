@@ -17,6 +17,8 @@ export interface API {
     openFolder: () => Promise<[string, boolean] | undefined>;
     isInstalled: (path: string) => Promise<boolean>;
     installVanilla: (path: string, version: VanillaVersion) => void;
+    getDownloadState: () => Promise<void>;
+    getInstallState: () => Promise<void>;
 }
 
 declare global {

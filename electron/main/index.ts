@@ -92,7 +92,7 @@ const createWindow = async () => {
         const isEmpty = (await fs.readdir(path)).length === 0;
         return [path, isEmpty];
     });
-    ipcMain.handle('isInstalled', async (_, path: string) => await exists(join(path, 'server.properties')));
+    ipcMain.handle('isInstalled', async (_, id: string) => await exists(join((await getProfiles())[id].path, 'server.properties')));
     ipcMain.on('installVanilla', async (_, path: string, version: VanillaVersion) => {
         (async () => {
             try {
