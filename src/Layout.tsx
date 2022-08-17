@@ -2,17 +2,19 @@ import {
     AppBar,
     Box,
     CircularProgress,
+    Divider,
     Drawer,
     IconButton,
     List,
     ListItem,
     ListItemButton,
+    ListItemIcon,
     ListItemText,
     ListSubheader,
     Toolbar,
     Typography
 } from '@mui/material';
-import { Menu as MenuIcon } from '@mui/icons-material';
+import { Code as CodeIcon, Menu as MenuIcon } from '@mui/icons-material';
 import { Outlet } from 'react-router-dom';
 import { Suspense, useState } from 'react';
 import { useAtomValue } from 'jotai';
@@ -53,6 +55,15 @@ const Layout = () => {
                             </ListItemButton>
                         </ListItem>
                     ))}
+                    <Divider />
+                    <ListItem key='openDevtools' disablePadding>
+                        <ListItemButton onClick={() => window.api.openDevtools()}>
+                            <ListItemIcon>
+                                <CodeIcon />
+                            </ListItemIcon>
+                            <ListItemText primary='開発者ツールを開く' sx={{ textOverflow: 'ellipsis' }} />
+                        </ListItemButton>
+                    </ListItem>
                 </List>
             </Drawer>
             <Box

@@ -12,6 +12,7 @@ type ForgeVersion = `forge${VanillaVersion}`;
 export type Version = VanillaVersion | ForgeVersion;
 
 export interface API {
+    openDevtools: () => void;
     getProfiles: () => Promise<Profiles>;
     setProfiles: (profiles: Profiles) => void;
     openFolder: () => Promise<[string, boolean] | undefined>;
@@ -20,6 +21,9 @@ export interface API {
     installVanilla: (path: string, version: VanillaVersion) => void;
     getDownloadState: () => Promise<void>;
     getInstallState: () => Promise<void>;
+    openProfile: (path: string) => void;
+    getProperties: () => Promise<{ [key: string]: string }>;
+    setProperties: (properties: { [key: string]: string }) => void;
 }
 
 declare global {

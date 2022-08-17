@@ -11,6 +11,7 @@ import { createWriteStream } from 'fs';
 import util from 'util';
 import child_process from 'child_process';
 import fetch from 'node-fetch';
+import ServerController from './ServerController';
 const streamPipeline = util.promisify(pipeline);
 const exec = util.promisify(child_process.exec);
 
@@ -45,6 +46,8 @@ const vanillaVersionURLs: Record<VanillaVersion, string> = {
     '1.12.2': 'https://launcher.mojang.com/v1/objects/886945bfb2b978778c3a0288fd7fab09d315b25f/server.jar'
 };
 
+let serverController: ServerController | undefined;
+
 const createWindow = async () => {
     const windowState = windowStateKeeper({
         defaultWidth: 800,
@@ -67,7 +70,6 @@ const createWindow = async () => {
         win.loadFile(join(paths.dist, 'index.html'));
     } else {
         win.loadURL(`http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`);
-        win.webContents.openDevTools();
     }
     win.removeMenu();
     win.once('ready-to-show', () => win.show());
@@ -80,6 +82,7 @@ const createWindow = async () => {
         win.focus();
     });
 
+    ipcMain.on('openDevtools', () => win.webContents.openDevTools());
     ipcMain.handle('getProfiles', async () => {
         return await getProfiles();
     });
@@ -122,6 +125,12 @@ const createWindow = async () => {
             }
         })();
     });
+    ipcMain.on('openProfile', (_, path: string) => {
+        serverController?.dispose();
+        serverController = new ServerController(path);
+    });
+    ipcMain.handle('getProperties', async () => await serverController!.getProperties());
+    ipcMain.on('setProperties', (_, properties: { [key: string]: string }) => serverController!.setProperties(properties));
 };
 
 app.whenReady().then(createWindow);
