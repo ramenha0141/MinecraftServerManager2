@@ -1,10 +1,12 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { createTheme, CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 import Layout from './Layout';
 import Home from './Home';
 import Manage from './Manage';
 import Setup from './Setup';
+import { useSetAtom } from 'jotai';
+import { profilesState } from './states';
 
 const App = () => {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -17,6 +19,10 @@ const App = () => {
             }),
         [prefersDarkMode]
     );
+    const setProfiles = useSetAtom(profilesState);
+    useEffect(() => {
+        window.api.getProfiles().then((profiles) => setProfiles(profiles));
+    }, []);
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
