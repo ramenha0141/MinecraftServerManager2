@@ -104,26 +104,24 @@ const createWindow = async () => {
         return 0;
     });
     ipcMain.on('installVanilla', async (_, path: string, version: VanillaVersion) => {
-        (async () => {
-            try {
-                const res = await fetch(vanillaVersionURLs[version]);
-                await streamPipeline(res.body!, createWriteStream(join(path, 'server.jar')));
-                win.webContents.send('downloadState', true);
-            } catch (e) {
-                win.webContents.send('downloadState', false);
-                console.log(e);
-                return;
-            }
-            try {
-                await exec('java -jar server.jar', { cwd: path });
-                await fs.writeFile(join(path, 'eula.txt'), 'eula=true\n');
-                win.webContents.send('installState', true);
-            } catch (e) {
-                win.webContents.send('installState', false);
-                console.log(e);
-                return;
-            }
-        })();
+        try {
+            const res = await fetch(vanillaVersionURLs[version]);
+            await streamPipeline(res.body!, createWriteStream(join(path, 'server.jar')));
+            win.webContents.send('downloadState', true);
+        } catch (e) {
+            win.webContents.send('downloadState', false);
+            console.log(e);
+            return;
+        }
+        try {
+            await exec('java -jar server.jar', { cwd: path });
+            await fs.writeFile(join(path, 'eula.txt'), 'eula=true\n');
+            win.webContents.send('installState', true);
+        } catch (e) {
+            win.webContents.send('installState', false);
+            console.log(e);
+            return;
+        }
     });
     ipcMain.on('openProfile', (_, path: string) => {
         serverController?.dispose();
