@@ -1,7 +1,7 @@
 import { Check as CheckIcon } from '@mui/icons-material';
-import { Autocomplete, Box, Button, Checkbox, CircularProgress, FormControlLabel, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Checkbox, CircularProgress, FormControlLabel, TextField, Typography } from '@mui/material';
 import { useAtomValue } from 'jotai';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ForgeVersion, Version } from './API';
 import { profilesState } from './states';
@@ -12,9 +12,32 @@ const Setup = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const profiles = useAtomValue(profilesState);
+    const [currentJavaVersion, setCurrentJavaVersion] = useState(-1);
+    const [javaVersionState, setJavaVersionState] = useState<'needInstall' | 'notRecommended'>();
+    const [recommendedJavaVersion, setRecommendedJavaVersion] = useState<number>(0);
     const [version, setVersion] = useState<Version>(versions[0]);
     const [eulaChecked, setEulaChecked] = useState(false);
     const [installState, setInstallState] = useState<'download' | 'install' | 'complete'>();
+    useEffect(() => {
+        window.api.getJavaVersion().then((javaVersion) => setCurrentJavaVersion(javaVersion));
+    }, []);
+    useEffect(() => {
+        if (currentJavaVersion < 0) return;
+        if (currentJavaVersion === 0) {
+            setJavaVersionState('needInstall');
+        } else {
+            const minorVersion = parseInt(version.match(/(?<=1\.)\d+?(?=\.|$)/)![0]);
+            const recommended = minorVersion <= 16 ? 8 : minorVersion === 17 ? 16 : 17;
+            setRecommendedJavaVersion(recommended);
+            if (currentJavaVersion < recommended) {
+                setJavaVersionState('needInstall');
+            } else if (currentJavaVersion === recommended) {
+                setJavaVersionState(undefined);
+            } else {
+                setJavaVersionState('notRecommended');
+            }
+        }
+    }, [version, currentJavaVersion]);
     const install = async () => {
         if (!isForge(version)) window.api.installVanilla(profiles[id!].path, version);
         setInstallState('download');
@@ -28,7 +51,7 @@ const Setup = () => {
         return null;
     }
     return (
-        <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <Box sx={{ flexGrow: 1, mx: 8, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
             <Typography variant='h5' sx={{ mb: 2 }}>
                 セットアップ
             </Typography>
@@ -43,6 +66,13 @@ const Setup = () => {
                         sx={{ width: 300 }}
                         renderInput={(params) => <TextField {...params} label='バージョン' />}
                     ></Autocomplete>
+                    <Alert severity={javaVersionState ? (javaVersionState === 'needInstall' ? 'error' : 'warning') : 'success'}>
+                        {javaVersionState
+                            ? javaVersionState === 'needInstall'
+                                ? `Javaがインストールされていないかバージョンが低いです。推奨:Java${recommendedJavaVersion}`
+                                : `インストールされたJavaのバージョンが推奨バージョンより高いため正常に動作しない可能性があります。推奨:Java${recommendedJavaVersion}, インストール済み:Java${currentJavaVersion}`
+                            : '推奨バージョンのJavaがインストールされています。'}
+                    </Alert>
                     <FormControlLabel
                         control={<Checkbox checked={eulaChecked} onChange={(e) => setEulaChecked(e.target.checked)} />}
                         label={
@@ -71,7 +101,7 @@ const Setup = () => {
                         インストール
                     </Typography>
                     {installState === 'complete' && (
-                        <Button variant='contained' sx={{ mt: 1 }}>
+                        <Button variant='contained' onClick={() => navigate(`/manage/${id}`)} sx={{ mt: 1 }}>
                             コンソールへ進む
                         </Button>
                     )}

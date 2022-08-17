@@ -93,6 +93,13 @@ const createWindow = async () => {
         return [path, isEmpty];
     });
     ipcMain.handle('isInstalled', async (_, id: string) => await exists(join((await getProfiles())[id].path, 'server.properties')));
+    ipcMain.handle('getJavaVersion', async () => {
+        try {
+            const { stderr } = await exec('java -version');
+            return parseInt(stderr.match(/(?<=java version ")\d+(?=\.)/)?.[0] ?? '0');
+        } catch (e) {}
+        return 0;
+    });
     ipcMain.on('installVanilla', async (_, path: string, version: VanillaVersion) => {
         (async () => {
             try {

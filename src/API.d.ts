@@ -16,6 +16,7 @@ export interface API {
     setProfiles: (profiles: Profiles) => void;
     openFolder: () => Promise<[string, boolean] | undefined>;
     isInstalled: (path: string) => Promise<boolean>;
+    getJavaVersion: () => Promise<number>;
     installVanilla: (path: string, version: VanillaVersion) => void;
     getDownloadState: () => Promise<void>;
     getInstallState: () => Promise<void>;
