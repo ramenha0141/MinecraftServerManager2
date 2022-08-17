@@ -115,7 +115,7 @@ const createWindow = async () => {
                 return;
             }
             try {
-                await exec(`cd ${path} && java -jar server.jar`);
+                await exec('java -jar server.jar', { cwd: path });
                 await fs.writeFile(join(path, 'eula.txt'), 'eula=true\n');
                 win.webContents.send('installState', true);
             } catch (e) {
