@@ -42,6 +42,7 @@ const Config = () => {
                             <TableCell align='right'>
                                 {isBool ? (
                                     <Select
+                                        variant='standard'
                                         size='small'
                                         value={properties[key] ?? defaultValue}
                                         onChange={(e) => handleChange(key, e.target.value)}
