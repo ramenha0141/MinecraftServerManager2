@@ -123,12 +123,15 @@ const createWindow = async () => {
             return;
         }
     });
-    ipcMain.on('openProfile', (_, path: string) => {
+    ipcMain.handle('openProfile', (_, path: string) => {
         serverController?.dispose();
         serverController = new ServerController(path);
+        return;
     });
     ipcMain.handle('getProperties', async () => await serverController!.getProperties());
     ipcMain.on('setProperties', (_, properties: { [key: string]: string }) => serverController!.setProperties(properties));
+    ipcMain.handle('getDiscordOptions', async () => await serverController!.getDiscordOptions());
+    ipcMain.on('setDiscordOptions', (_, discordOptions) => serverController!.setDiscordOptions(discordOptions));
 };
 
 app.whenReady().then(createWindow);
@@ -159,7 +162,7 @@ async function getProfiles(): Promise<Profiles> {
     return JSON.parse(await fs.readFile(paths.profiles, 'utf-8'));
 }
 
-async function exists(path: string) {
+export async function exists(path: string) {
     try {
         await fs.lstat(path);
         return true;

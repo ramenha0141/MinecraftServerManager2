@@ -32,7 +32,7 @@ const Config = () => {
                         <TableCell>キー</TableCell>
                         <TableCell align='right'>値</TableCell>
                         <TableCell align='right'>デフォルト値</TableCell>
-                        <TableCell align='right'></TableCell>
+                        <TableCell align='right'>説明</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody sx={{ userSelect: 'text' }}>

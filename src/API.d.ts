@@ -11,6 +11,12 @@ type VanillaVersion = '1.19.2' | '1.19' | '1.18.2' | '1.17.1' | '1.16.5' | '1.15
 type ForgeVersion = `forge${VanillaVersion}`;
 export type Version = VanillaVersion | ForgeVersion;
 
+export interface DiscordOptions {
+    enabled: boolean;
+    webhookURL: string;
+    template: string;
+}
+
 export interface API {
     openDevtools: () => void;
     getProfiles: () => Promise<Profiles>;
@@ -21,9 +27,11 @@ export interface API {
     installVanilla: (path: string, version: VanillaVersion) => void;
     getDownloadState: () => Promise<void>;
     getInstallState: () => Promise<void>;
-    openProfile: (path: string) => void;
+    openProfile: (path: string) => Promise<void>;
     getProperties: () => Promise<{ [key: string]: string }>;
     setProperties: (properties: { [key: string]: string }) => void;
+    getDiscordOptions: () => Promise<DiscordOptions>;
+    setDiscordOptions: (discordOptions: DiscordOptions) => void;
 }
 
 declare global {

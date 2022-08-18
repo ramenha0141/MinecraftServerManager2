@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import type { API, Profiles, VanillaVersion } from '../../src/API';
+import type { API, DiscordOptions, Profiles, VanillaVersion } from '../../src/API';
 
 const api: API = {
     openDevtools: () => ipcRenderer.send('openDevtools'),
@@ -11,9 +11,11 @@ const api: API = {
     installVanilla: (path: string, version: VanillaVersion) => ipcRenderer.send('installVanilla', path, version),
     getDownloadState: () => new Promise((resolve, reject) => ipcRenderer.once('downloadState', (_, success) => (success ? resolve() : reject()))),
     getInstallState: () => new Promise((resolve, reject) => ipcRenderer.once('installState', (_, success) => (success ? resolve() : reject()))),
-    openProfile: (path: string) => ipcRenderer.send('openProfile', path),
+    openProfile: (path: string) => ipcRenderer.invoke('openProfile', path),
     getProperties: () => ipcRenderer.invoke('getProperties'),
-    setProperties: (properties: { [key: string]: string }) => ipcRenderer.send('setProperties', properties)
+    setProperties: (properties: { [key: string]: string }) => ipcRenderer.send('setProperties', properties),
+    getDiscordOptions: () => ipcRenderer.invoke('getDiscordOptions'),
+    setDiscordOptions: (discordOptions: DiscordOptions) => ipcRenderer.send('setDiscordOptions', discordOptions)
 };
 
 contextBridge.exposeInMainWorld('api', api);

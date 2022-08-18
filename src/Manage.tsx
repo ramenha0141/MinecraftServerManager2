@@ -1,9 +1,10 @@
 import { PlayArrow as PlayArrowIcon, Stop as StopIcon } from '@mui/icons-material';
-import { Box, Button, ButtonGroup, Tab, Tabs } from '@mui/material';
+import { Box, Button, ButtonGroup, CircularProgress, Tab, Tabs } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Config from './Config';
+import DiscordConfig from './DiscordConfig';
 import { profilesState } from './states';
 
 const TabPanel = (props: { children: JSX.Element; value: number; index: number }) => (
@@ -14,10 +15,23 @@ const Manage = () => {
     const { id } = useParams();
     const profiles = useAtomValue(profilesState);
     const [tabIndex, setTabIndex] = useState(0);
+    const [loaded, setLoaded] = useState(false);
     useEffect(() => {
-        window.api.openProfile(profiles[id!].path);
+        window.api.openProfile(profiles[id!].path).then(() => setLoaded(true));
     }, []);
     if (!id) return null;
+    if (!loaded)
+        return (
+            <CircularProgress
+                color='inherit'
+                sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)'
+                }}
+            />
+        );
     return (
         <Box sx={{ flexGrow: 1, flexBasis: 0, mx: 8, mb: 4, display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ flexShrink: 0, mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
@@ -44,7 +58,7 @@ const Manage = () => {
                 <div>b</div>
             </TabPanel>
             <TabPanel value={tabIndex} index={2}>
-                <div>c</div>
+                <DiscordConfig />
             </TabPanel>
         </Box>
     );
