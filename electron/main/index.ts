@@ -99,7 +99,7 @@ const createWindow = async () => {
     ipcMain.handle('getJavaVersion', async () => {
         try {
             const { stderr } = await exec('java -version');
-            return parseInt(stderr.match(/(?<=java version ")\d+(?=\.)/)?.[0] ?? '0');
+            return parseInt(stderr.match(/(?<=version ")\d+(?=\.)/)?.[0] ?? '0');
         } catch (e) {}
         return 0;
     });
