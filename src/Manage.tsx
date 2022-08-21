@@ -1,9 +1,9 @@
-import { PlayArrow as PlayArrowIcon, Stop as StopIcon } from '@mui/icons-material';
-import { Box, Button, ButtonGroup, CircularProgress, Tab, Tabs } from '@mui/material';
+import { Box, CircularProgress, Tab, Tabs } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Config from './Config';
+import Controls from './Controls';
 import DiscordConfig from './DiscordConfig';
 import { profilesState } from './states';
 
@@ -34,16 +34,7 @@ const Manage = () => {
         );
     return (
         <Box sx={{ flexGrow: 1, flexBasis: 0, mx: 8, mb: 4, display: 'flex', flexDirection: 'column' }}>
-            <Box sx={{ flexShrink: 0, mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
-                <ButtonGroup variant='contained'>
-                    <Button>
-                        <PlayArrowIcon />
-                    </Button>
-                    <Button>
-                        <StopIcon />
-                    </Button>
-                </ButtonGroup>
-            </Box>
+            <Controls />
             <Box sx={{ mb: 1, borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={tabIndex} onChange={(_, tabIndex) => setTabIndex(tabIndex)}>
                     <Tab label='サーバー設定' />

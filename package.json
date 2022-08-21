@@ -19,6 +19,7 @@
         "@emotion/styled": "^11.10.0",
         "@fontsource/roboto": "^4.5.8",
         "@mui/icons-material": "^5.8.4",
+        "@mui/lab": "5.0.0-alpha.95",
         "@mui/material": "^5.10.0",
         "electron-window-state": "^5.0.3",
         "jotai": "^1.7.8",

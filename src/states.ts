@@ -9,3 +9,5 @@ export const profilesState = atom<Profiles, Profiles>(
         window.api.setProfiles(value);
     }
 );
+
+export const isRunningState = atom(false);
