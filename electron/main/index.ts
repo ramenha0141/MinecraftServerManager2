@@ -132,6 +132,8 @@ const createWindow = async () => {
     ipcMain.on('setProperties', (_, properties: { [key: string]: string }) => serverController!.setProperties(properties));
     ipcMain.handle('getDiscordOptions', async () => await serverController!.getDiscordOptions());
     ipcMain.on('setDiscordOptions', (_, discordOptions) => serverController!.setDiscordOptions(discordOptions));
+    ipcMain.handle('start', async () => await serverController!.start((data) => win.webContents.send('console', data)));
+    ipcMain.handle('stop', async () => await serverController!.stop());
 };
 
 app.whenReady().then(createWindow);

@@ -41,11 +41,19 @@ const DiscordConfig = () => {
             />
             <TextField
                 variant='standard'
-                label='テンプレート'
+                label='開始テンプレート'
                 multiline
                 sx={{ width: 400 }}
-                value={discordOptions.template}
-                onChange={(e) => handleChange('template', e.target.value)}
+                value={discordOptions.startTemplate}
+                onChange={(e) => handleChange('startTemplate', e.target.value)}
+            />
+            <TextField
+                variant='standard'
+                label='停止テンプレート'
+                multiline
+                sx={{ width: 400 }}
+                value={discordOptions.stopTemplate}
+                onChange={(e) => handleChange('stopTemplate', e.target.value)}
             />
         </Box>
     );

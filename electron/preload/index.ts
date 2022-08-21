@@ -15,7 +15,9 @@ const api: API = {
     getProperties: () => ipcRenderer.invoke('getProperties'),
     setProperties: (properties: { [key: string]: string }) => ipcRenderer.send('setProperties', properties),
     getDiscordOptions: () => ipcRenderer.invoke('getDiscordOptions'),
-    setDiscordOptions: (discordOptions: DiscordOptions) => ipcRenderer.send('setDiscordOptions', discordOptions)
+    setDiscordOptions: (discordOptions: DiscordOptions) => ipcRenderer.send('setDiscordOptions', discordOptions),
+    start: () => ipcRenderer.invoke('start'),
+    stop: () => ipcRenderer.invoke('stop')
 };
 
 contextBridge.exposeInMainWorld('api', api);

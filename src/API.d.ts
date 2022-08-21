@@ -14,7 +14,8 @@ export type Version = VanillaVersion | ForgeVersion;
 export interface DiscordOptions {
     enabled: boolean;
     webhookURL: string;
-    template: string;
+    startTemplate: string;
+    stopTemplate: string;
 }
 
 export interface API {
@@ -32,6 +33,8 @@ export interface API {
     setProperties: (properties: { [key: string]: string }) => void;
     getDiscordOptions: () => Promise<DiscordOptions>;
     setDiscordOptions: (discordOptions: DiscordOptions) => void;
+    start: () => Promise<boolean>;
+    stop: () => Promise<boolean>;
 }
 
 declare global {
