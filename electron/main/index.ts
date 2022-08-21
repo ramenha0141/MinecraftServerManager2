@@ -77,6 +77,12 @@ const createWindow = async () => {
         if (url.startsWith('https:')) shell.openExternal(url);
         return { action: 'deny' };
     });
+    win.on('close', async (e) => {
+        if (serverController && (serverController.isRunning || serverController.isProcessing)) {
+            e.preventDefault();
+            dialog.showErrorBox('エラー', 'サーバーが稼働中です');
+        }
+    });
     app.on('second-instance', () => {
         if (win.isMinimized()) win.restore();
         win.focus();

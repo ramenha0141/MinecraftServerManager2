@@ -10,6 +10,7 @@ class ServerController {
     private discordOptions: DiscordOptions;
     private process?: ChildProcessWithoutNullStreams;
     public isRunning = false;
+    public isProcessing = false;
     constructor(private readonly path: string) {}
     async getProperties() {
         return parse(await fs.readFile(join(this.path, 'server.properties'), 'utf-8'));
@@ -35,6 +36,7 @@ class ServerController {
         fs.writeFile(join(this.path, 'discord.json'), JSON.stringify((this.discordOptions = discordOptions)));
     }
     async start(callback: (data: string) => void): Promise<boolean> {
+        this.isProcessing = true;
         this.process = spawn('java', ['-jar', 'server.jar', '-nogui'], { cwd: this.path });
         this.process.stdout.pipe(process.stdout);
         this.process.stdout.on('data', (data: Buffer) => {
@@ -46,14 +48,17 @@ class ServerController {
             this.notifyDiscord('start');
             this.isRunning = true;
         }
+        this.isProcessing = false;
         return success;
     }
     async stop(): Promise<boolean> {
         if (!this.process) return false;
+        this.isProcessing = true;
         this.process.stdin.write('stop\n');
         await waitForStop(this.process);
         this.notifyDiscord('stop');
         this.isRunning = false;
+        this.isProcessing = false;
         return true;
     }
     notifyDiscord(type: 'start' | 'stop') {

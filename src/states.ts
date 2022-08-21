@@ -11,3 +11,4 @@ export const profilesState = atom<Profiles, Profiles>(
 );
 
 export const isRunningState = atom(false);
+export const isProcessingState = atom(false);

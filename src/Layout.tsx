@@ -14,15 +14,18 @@ import {
     Toolbar,
     Typography
 } from '@mui/material';
-import { Code as CodeIcon, Menu as MenuIcon } from '@mui/icons-material';
-import { Outlet } from 'react-router-dom';
-import { Suspense, useState } from 'react';
+import { Code as CodeIcon, Home as HomeIcon, Menu as MenuIcon } from '@mui/icons-material';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useAtomValue } from 'jotai';
-import { profilesState } from './states';
+import { isProcessingState, isRunningState, profilesState } from './states';
 import useManageOrSetup from './useManageOrSetup';
 
 const Layout = () => {
+    const navigate = useNavigate();
     const profiles = useAtomValue(profilesState);
+    const isRunning = useAtomValue(isRunningState);
+    const isProcessing = useAtomValue(isProcessingState);
     const [open, setOpen] = useState(false);
     const manageOrSetup = useManageOrSetup();
     const toggleOpen = () => setOpen((open) => !open);
@@ -47,10 +50,18 @@ const Layout = () => {
             </AppBar>
             <Drawer open={open} onClose={toggleOpen}>
                 <List sx={{ flexGrow: 1, width: 240 }} onClick={toggleOpen}>
+                    <ListItem key='home' disablePadding>
+                        <ListItemButton disabled={isRunning || isProcessing} onClick={() => navigate('/')}>
+                            <ListItemIcon>
+                                <HomeIcon />
+                            </ListItemIcon>
+                            <ListItemText primary='ホーム' />
+                        </ListItemButton>
+                    </ListItem>
                     <ListSubheader sx={{ backgroundColor: 'inherit' }}>プロファイル</ListSubheader>
                     {Object.entries(profiles).map(([id, { name, path }]) => (
                         <ListItem key={id} disablePadding>
-                            <ListItemButton onClick={() => manageOrSetup(id)}>
+                            <ListItemButton disabled={isRunning || isProcessing} onClick={() => manageOrSetup(id)}>
                                 <ListItemText primary={name} secondary={path} sx={{ textOverflow: 'ellipsis' }} />
                             </ListItemButton>
                         </ListItem>

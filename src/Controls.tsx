@@ -2,14 +2,14 @@ import { Box, ButtonGroup, Snackbar, Alert } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { PlayArrow as PlayArrowIcon, Stop as StopIcon } from '@mui/icons-material';
 import { useAtom } from 'jotai';
-import { isRunningState } from './states';
+import { isProcessingState, isRunningState } from './states';
 import { useState } from 'react';
 
 type AlertType = 'start_success' | 'start_failed' | 'stop_success' | 'stop_failed';
 
 const Controls = () => {
     const [isRunning, setIsRunning] = useAtom(isRunningState);
-    const [isProcessing, setIsProcessing] = useState(false);
+    const [isProcessing, setIsProcessing] = useAtom(isProcessingState);
     const [isShowAlert, setIsShowAlert] = useState(false);
     const [alertType, setAlertType] = useState<AlertType>();
     const start = async () => {
