@@ -136,7 +136,7 @@ const createWindow = async () => {
     });
     ipcMain.handle('getProperties', async () => await serverController!.getProperties());
     ipcMain.on('setProperties', (_, properties: { [key: string]: string }) => serverController!.setProperties(properties));
-    ipcMain.handle('getDiscordOptions', async () => await serverController!.getDiscordOptions());
+    ipcMain.handle('getDiscordOptions', async () => serverController!.getDiscordOptions());
     ipcMain.on('setDiscordOptions', (_, discordOptions) => serverController!.setDiscordOptions(discordOptions));
     ipcMain.handle('start', async () => await serverController!.start((data) => win.webContents.send('console', data)));
     ipcMain.handle('stop', async () => await serverController!.stop());
@@ -177,14 +177,4 @@ export async function exists(path: string) {
     } catch (e) {
         return false;
     }
-}
-
-function createPromise<T>(): [Promise<T>, (value: T) => void, (reason: any) => void] {
-    let resolve: (value: T) => void;
-    let reject: (reason: any) => void;
-    const promise = new Promise<T>((res, rej) => {
-        resolve = res;
-        reject = rej;
-    });
-    return [promise, resolve!, reject!];
 }

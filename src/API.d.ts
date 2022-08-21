@@ -1,3 +1,5 @@
+import type { Status } from 'pidusage';
+
 export interface Profile {
     name: string;
     path: string;

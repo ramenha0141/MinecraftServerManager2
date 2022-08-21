@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
+import fsSync from 'fs';
 import { join } from 'path';
-import { exists } from './index';
 import { parse, stringify } from './properties';
 import type { DiscordOptions } from '../../src/API';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
@@ -11,26 +11,29 @@ class ServerController {
     private process?: ChildProcessWithoutNullStreams;
     public isRunning = false;
     public isProcessing = false;
-    constructor(private readonly path: string) {}
+    constructor(private readonly path: string) {
+        const optionsPath = join(path, 'discord.json');
+        if (fsSync.existsSync(optionsPath)) {
+            this.discordOptions = JSON.parse(fsSync.readFileSync(optionsPath, 'utf-8'));
+        } else {
+            const defaultOptions = {
+                enabled: false,
+                webhookURL: '',
+                startTemplate: 'サーバーが開始しました。',
+                stopTemplate: 'サーバーが停止しました。'
+            };
+            fs.writeFile(optionsPath, JSON.stringify(defaultOptions));
+            this.discordOptions = defaultOptions;
+        }
+    }
     async getProperties() {
         return parse(await fs.readFile(join(this.path, 'server.properties'), 'utf-8'));
     }
     setProperties(properties: { [key: string]: string }) {
         fs.writeFile(join(this.path, 'server.properties'), stringify(properties));
     }
-    async getDiscordOptions() {
-        const path = join(this.path, 'discord.json');
-        if (!(await exists(path)))
-            await fs.writeFile(
-                path,
-                JSON.stringify({
-                    enabled: false,
-                    webhookURL: '',
-                    startTemplate: 'サーバーが開始しました。',
-                    stopTemplate: 'サーバーが停止しました。'
-                })
-            );
-        return (this.discordOptions = JSON.parse(await fs.readFile(path, 'utf-8')) as DiscordOptions);
+    getDiscordOptions() {
+        return this.discordOptions;
     }
     setDiscordOptions(discordOptions: DiscordOptions) {
         fs.writeFile(join(this.path, 'discord.json'), JSON.stringify((this.discordOptions = discordOptions)));
@@ -46,8 +49,8 @@ class ServerController {
         const success = await waitForStartup(this.process);
         if (success && this.discordOptions.enabled) {
             this.notifyDiscord('start');
-            this.isRunning = true;
         }
+        this.isRunning = success;
         this.isProcessing = false;
         return success;
     }
