@@ -8,7 +8,9 @@ import DiscordConfig from './DiscordConfig';
 import { profilesState } from './states';
 
 const TabPanel = (props: { children: JSX.Element; value: number; index: number }) => (
-    <Box sx={{ flexGrow: 1, flexDirection: 'column', display: props.value === props.index ? 'flex' : 'none' }}>{props.children}</Box>
+    <Box sx={{ flexGrow: 1, flexDirection: 'column', display: props.value === props.index ? 'flex' : 'none' }}>
+        {props.value === props.index && props.children}
+    </Box>
 );
 
 const Manage = () => {
