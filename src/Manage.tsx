@@ -48,7 +48,7 @@ const Manage = () => {
                 <Config />
             </TabPanel>
             <TabPanel value={tabIndex} index={1}>
-                <div>b</div>
+                <div>Not implemented</div>
             </TabPanel>
             <TabPanel value={tabIndex} index={2}>
                 <DiscordConfig />
