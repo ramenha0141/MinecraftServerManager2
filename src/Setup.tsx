@@ -1,5 +1,5 @@
 import { Check as CheckIcon } from '@mui/icons-material';
-import { Alert, Autocomplete, Box, Button, Checkbox, CircularProgress, FormControlLabel, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Checkbox, CircularProgress, FormControlLabel, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -17,7 +17,7 @@ const Setup = () => {
     const [recommendedJavaVersion, setRecommendedJavaVersion] = useState<number>(0);
     const [version, setVersion] = useState<Version>(versions[0]);
     const [eulaChecked, setEulaChecked] = useState(false);
-    const [installState, setInstallState] = useState<'download' | 'install' | 'complete'>();
+    const [installState, setInstallState] = useState<number>();
     useEffect(() => {
         window.api.getJavaVersion().then((javaVersion) => setCurrentJavaVersion(javaVersion));
     }, []);
@@ -40,11 +40,11 @@ const Setup = () => {
     }, [version, currentJavaVersion]);
     const install = async () => {
         window.api.installVanilla(profiles[id!].path, version);
-        setInstallState('download');
+        setInstallState(0);
         await window.api.getDownloadState();
-        setInstallState('install');
+        setInstallState(1);
         await window.api.getInstallState();
-        setInstallState('complete');
+        setInstallState(2);
     };
     if (!id) {
         navigate('/');
@@ -55,7 +55,7 @@ const Setup = () => {
             <Typography variant='h5' sx={{ mb: 2 }}>
                 セットアップ
             </Typography>
-            {!installState ? (
+            {installState === undefined ? (
                 <>
                     <Autocomplete
                         disableClearable
@@ -90,17 +90,15 @@ const Setup = () => {
                 </>
             ) : (
                 <>
-                    <Typography variant='h6' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        {installState === 'download' && <CircularProgress size={30} />}
-                        {(installState === 'install' || installState === 'complete') && <CheckIcon />}
-                        ダウンロード
-                    </Typography>
-                    <Typography variant='h6' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        {installState === 'install' && <CircularProgress size={30} />}
-                        {installState === 'complete' && <CheckIcon />}
-                        インストール
-                    </Typography>
-                    {installState === 'complete' && (
+                    <Stepper activeStep={installState} sx={{ width: 300 }}>
+                        <Step completed={installState >= 1}>
+                            <StepLabel>ダウンロード</StepLabel>
+                        </Step>
+                        <Step completed={installState >= 2}>
+                            <StepLabel>インストール</StepLabel>
+                        </Step>
+                    </Stepper>
+                    {installState === 2 && (
                         <Button variant='contained' onClick={() => navigate(`/manage/${id}`)} sx={{ mt: 1 }}>
                             コンソールへ進む
                         </Button>
