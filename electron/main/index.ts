@@ -5,7 +5,7 @@ import { release } from 'os';
 import fs from 'fs/promises';
 import { join } from 'path';
 import { v4 as uuid, validate } from 'uuid';
-import type { Profiles, VanillaVersion } from '../../src/API';
+import type { Profiles, Version } from '../../src/API';
 import { pipeline } from 'stream';
 import { createWriteStream } from 'fs';
 import util from 'util';
@@ -34,8 +34,9 @@ export const paths = {
 
 migrateIfNecessary();
 
-const vanillaVersionURLs: Record<VanillaVersion, string> = {
+const versionURLs: Record<Version, string> = {
     '1.19.2': 'https://piston-data.mojang.com/v1/objects/f69c284232d7c7580bd89a5a4931c3581eae1378/server.jar',
+    'Paper1.19.2': 'https://api.papermc.io/v2/projects/paper/versions/1.19.2/builds/206/downloads/paper-1.19.2-206.jar',
     '1.19': 'https://launcher.mojang.com/v1/objects/e00c4052dac1d59a1188b2aa9d5a87113aaf1122/server.jar',
     '1.18.2': 'https://launcher.mojang.com/v1/objects/c8f83c5655308435b3dcf03c06d9fe8740a77469/server.jar',
     '1.17.1': 'https://launcher.mojang.com/v1/objects/a16d67e5807f57fc4e550299cf20226194497dc2/server.jar',
@@ -109,9 +110,9 @@ const createWindow = async () => {
         } catch (e) {}
         return 0;
     });
-    ipcMain.on('installVanilla', async (_, path: string, version: VanillaVersion) => {
+    ipcMain.on('installVanilla', async (_, path: string, version: Version) => {
         try {
-            const res = await fetch(vanillaVersionURLs[version]);
+            const res = await fetch(versionURLs[version]);
             await streamPipeline(res.body!, createWriteStream(join(path, 'server.jar')));
             win.webContents.send('downloadState', true);
         } catch (e) {

@@ -3,10 +3,10 @@ import { Alert, Autocomplete, Box, Button, Checkbox, CircularProgress, FormContr
 import { useAtomValue } from 'jotai';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ForgeVersion, Version } from './API';
+import { Version } from './API';
 import { profilesState } from './states';
 
-const versions: Version[] = ['1.19.2', '1.19', '1.18.2', '1.17.1', '1.16.5', '1.15.2', '1.14.4', '1.13.2', '1.12.2'];
+const versions: Version[] = ['1.19.2', 'Paper1.19.2', '1.19', '1.18.2', '1.17.1', '1.16.5', '1.15.2', '1.14.4', '1.13.2', '1.12.2'];
 
 const Setup = () => {
     const { id } = useParams();
@@ -39,7 +39,7 @@ const Setup = () => {
         }
     }, [version, currentJavaVersion]);
     const install = async () => {
-        if (!isForge(version)) window.api.installVanilla(profiles[id!].path, version);
+        window.api.installVanilla(profiles[id!].path, version);
         setInstallState('download');
         await window.api.getDownloadState();
         setInstallState('install');
@@ -111,5 +111,3 @@ const Setup = () => {
     );
 };
 export default Setup;
-
-const isForge = (version: Version): version is ForgeVersion => version.startsWith('forge');
