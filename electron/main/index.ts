@@ -7,7 +7,7 @@ import { join } from 'path';
 import { v4 as uuid, validate } from 'uuid';
 import type { Profiles, Version } from '../../src/API';
 import { pipeline } from 'stream';
-import { createWriteStream } from 'fs';
+import { createWriteStream, existsSync } from 'fs';
 import util from 'util';
 import child_process from 'child_process';
 import fetch from 'node-fetch';
@@ -15,7 +15,12 @@ import ServerController from './ServerController';
 const streamPipeline = util.promisify(pipeline);
 const exec = util.promisify(child_process.exec);
 
-if (release().startsWith('6.1') || import.meta.env.VITE_DISABLE_HARDWARE_ACCELERATION === 'true') app.disableHardwareAcceleration();
+if (
+    release().startsWith('6.1') ||
+    import.meta.env.VITE_DISABLE_HARDWARE_ACCELERATION === 'true' ||
+    existsSync(join(__dirname, 'disable_hardware_acceleration'))
+)
+    app.disableHardwareAcceleration();
 
 if (process.platform === 'win32') app.setAppUserModelId(app.getName());
 
